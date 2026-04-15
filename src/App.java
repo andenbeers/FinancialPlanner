@@ -3,6 +3,50 @@ import java.util.InputMismatchException;
 
 public class App {
 
+private static String getStringInput(Scanner scnr, String prompt) {
+    while (true) {
+        try {
+            System.out.print(prompt);
+            String input = scnr.nextLine();
+            if (input.trim().isEmpty()) throw new IllegalArgumentException("Input cannot be empty.");
+            return input;
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+private static double getDoubleInput(Scanner scnr, String prompt, double min) {
+    while (true) {
+        try {
+            System.out.print(prompt);
+            double input = scnr.nextDouble();
+            if (input < min) throw new IllegalArgumentException("Value must be at least " + min + ".");
+            return input;
+        } catch (InputMismatchException e) {
+            System.out.println("Please enter a valid number.");
+            scnr.nextLine();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+private static int getIntInput(Scanner scnr, String prompt, int min) {
+    while (true) {
+        try {
+            System.out.print(prompt);
+            int input = scnr.nextInt();
+            if (input < min) throw new IllegalArgumentException("Value must be at least " + min + ".");
+            return input;
+        } catch (InputMismatchException e) {
+            System.out.println("Please enter a valid number.");
+            scnr.nextLine();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
 
     public static void roth(Scanner scnr) {
         String name = "";
@@ -14,107 +58,12 @@ public class App {
             try {
                 System.out.println("Welcome to the Roth IRA Calculator! Please enter the following information:");
 
-                while (true) {
-                    try {
-                         System.out.print("Name: ");
-                        name = scnr.nextLine();
-                            if (name.trim().isEmpty()) {
-                                throw new IllegalArgumentException("Name cannot be empty.");
-                            }
-                        break; // exit loop if input is valid
-                    } catch (InputMismatchException e) {
-                        System.out.println("Please enter a valid string for the name.");
-                        scnr.nextLine();
-                }
-                    catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
-            }
-               
-                while (true) {
-                    try {
-                        System.out.print("Starting Balance: ");
-                        startBal = scnr.nextDouble();
-                        if (startBal < 0) {
-                            throw new IllegalArgumentException("Starting balance cannot be negative.");
-                        }
-                        break; // exit loop if input is valid
-                    } catch (InputMismatchException e) {
-                        System.out.println("Please enter a valid number for the starting balance.");
-                        scnr.nextLine();
-                }
-                    catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
-            }
-            
-                while (true) {
-                    try {
-                        System.out.print("Starting Age: ");
-                        ageS = scnr.nextInt();
-                        if (ageS < 0) {
-                            throw new IllegalArgumentException("Starting age cannot be negative.");
-                        }
-                        break; // exit loop if input is valid
-                    } catch (InputMismatchException e) {
-                        System.out.println("Please enter a valid number for the starting age.");
-                        scnr.nextLine();
-                }
-                    catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
-            }
-
-                while (true) {
-                    try {
-                        System.out.print("Retirement Age: ");
-                        ageR = scnr.nextInt();
-                        if (ageR < 0) {
-                            throw new IllegalArgumentException("Retirement age cannot be negative.");
-                        }
-                        if (ageR <= ageS) {
-                            throw new IllegalArgumentException("Retirement age must be greater than starting age.");
-                        }
-                        break; // exit loop if input is valid
-                    } catch (InputMismatchException e) {
-                        System.out.println("Please enter a valid number for the retirement age.");
-                        scnr.nextLine();
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-
-                while (true) {
-                    try {
-                        System.out.print("Monthly Contribution $: ");
-                        monthC = scnr.nextDouble();
-                        if (monthC < 0) {
-                            throw new IllegalArgumentException("Monthly contribution cannot be negative.");
-                        }
-                        break; // exit loop if input is valid
-                    } catch (InputMismatchException e) {
-                        System.out.println("Please enter a valid number for the monthly contribution.");
-                        scnr.nextLine();
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-
-                while (true) {
-                    try {
-                        System.out.print("Expected Annual Rate of Return %: ");
-                        rate = scnr.nextDouble();
-                        if (rate < 0) {
-                            throw new IllegalArgumentException("Expected annual rate of return cannot be negative.");
-                        }
-                        break; // exit loop if input is valid
-                    } catch (InputMismatchException e) {
-                        System.out.println("Please enter a valid number for the expected annual rate of return.");
-                        scnr.nextLine();
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
+                name     = getStringInput(scnr, "Name: ");
+                startBal = getDoubleInput(scnr, "Starting Balance: ", 0);
+                ageS     = getIntInput(scnr, "Starting Age: ", 0);
+                ageR     = getIntInput(scnr, "Retirement Age: ", ageS + 1); // enforces > ageS
+                monthC   = getDoubleInput(scnr, "Monthly Contribution $: ", 0);
+                rate     = getDoubleInput(scnr, "Expected Annual Rate of Return %: ", 0);
 
                 yearstoInvest = ageR - ageS;
                 rate = rate / 100;
