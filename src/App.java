@@ -125,57 +125,51 @@ public class App {
     }
 
     public static void carLoanCalculator(Scanner scnr) {
-        double CarPrice = 0.0; 
-        double DownPayment = 0.0; 
-        double InterestRate = 0.0; 
-        double MonthlyRate = 0.0;
-        double MonthlyPayment = 0.0;
-        double LoanAmount = 0.0;
-        int LoanTerm = 0;  //loan term in months
-        int Salary = 0;
-        Scanner sc = new Scanner(System.in);
-        
-        System.out.println("Enter the total price of the car please");
-        CarPrice = sc.nextDouble(); 
-        System.out.println("Enter the down payment please");
-        DownPayment = sc.nextDouble();
-        System.out.println("Enter the interest rate please ");
-        InterestRate = sc.nextDouble();
-        System.out.println("Enter the term of the loan in months please");
-        LoanTerm = sc.nextInt();
-        System.out.println("Enter your salary please ");
-        Salary = sc.nextInt();
-        Double IdealPayment = 0.15*Salary;
-        
-        if (CarPrice <= 0 || InterestRate < 0 || LoanTerm <= 0 || DownPayment < 0){
-            System.out.println("Please enter correct values");
-        }
-        else {
-            LoanAmount = CarPrice - DownPayment;
-            if (LoanAmount <= 0){
-                System.out.println("please input correct values");
+    double carPrice, downPayment, interestRate, monthlyRate, monthlyPayment, loanAmount;
+    double salary, idealPayment;
+    int loanTerm;
+    boolean inputValid = false;
+
+    while (!inputValid) {
+        try {
+            System.out.println("Welcome to the Car Loan Calculator! Please enter the following information:");
+
+            carPrice     = getDoubleInput(scnr, "Car Price: $", 1);
+            downPayment  = getDoubleInput(scnr, "Down Payment: $", 0);
+            interestRate = getDoubleInput(scnr, "Annual Interest Rate %: ", 0);
+            loanTerm     = getIntInput(scnr, "Loan Term (months): ", 1);
+            salary       = getDoubleInput(scnr, "Monthly Gross Income: $", 1);
+
+            idealPayment = 0.15 * salary;
+            loanAmount   = carPrice - downPayment;
+
+            if (loanAmount <= 0) {
+                System.out.println("Down payment cannot exceed or equal the car price. Please try again.");
+                continue;
             }
-            else {
-                if (InterestRate == 0){
-                    MonthlyPayment = LoanAmount/LoanTerm;
-                    System.out.println("The monthly payment would be "+MonthlyPayment);
-                    if (MonthlyPayment > IdealPayment){
-                        System.out.println("Your monthly payment is too high! try other options such as increasing the down payment");
-                    }
-                }
-                else {
-                    MonthlyRate = InterestRate /(12*100);
-                    MonthlyPayment = (LoanAmount * MonthlyRate * Math.pow(1 + MonthlyRate, LoanTerm)) 
-                        / (Math.pow(1 + MonthlyRate, LoanTerm) - 1);
-                    System.out.println("The monthly payment would be "+MonthlyPayment);
-                    if (MonthlyPayment > IdealPayment){
-                        
-                        System.out.println("Your monthly payment is too high! try other options such as increasing the down payment");
-                    }
-                    
-                }
+
+            if (interestRate == 0) {
+                monthlyPayment = loanAmount / loanTerm;
+            } else {
+                monthlyRate    = interestRate / (12 * 100);
+                monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, loanTerm))
+                               / (Math.pow(1 + monthlyRate, loanTerm) - 1);
             }
+
+            System.out.printf("Your monthly car payment will be $%.2f.\n", monthlyPayment);
+
+            if (monthlyPayment > idealPayment) {
+                System.out.printf("Warning: This exceeds 15%% of your monthly income ($%.2f). " +
+                                  "Consider a larger down payment or longer term.\n", idealPayment);
+            }
+
+            inputValid = true;
         }
+        catch (InputMismatchException e) {
+            System.out.println("Please enter valid input.");
+            scnr.nextLine();
+        }
+    }
     }
     
     public static void main(String[] args) {
@@ -184,7 +178,7 @@ public class App {
 
         while (true) { // single loop handles everything
             System.out.println("\nPlease select an option:");
-            System.out.println("1. Roth IRA Calculator\n2. Loan Calculator\n3. Mortgage Calculator\n4. Exit");
+            System.out.println("1. Roth IRA Calculator\n2. Car Loan Calculator\n3. Mortgage Calculator\n4. Exit");
 
             try {
                 int input = scnr.nextInt();
