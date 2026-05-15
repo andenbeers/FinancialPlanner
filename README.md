@@ -1,7 +1,8 @@
 # Financial Planner
  
 A Java console application that helps users make everyday financial decisions. The app brings three calculators together in one place — no spreadsheet or financial advisor needed.
- 
+
+**Code Destination : src / App.java**
 ---
  
 ## Features
